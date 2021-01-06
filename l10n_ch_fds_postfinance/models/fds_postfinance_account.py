@@ -26,6 +26,7 @@ class FdsPostfinanceAccount(models.Model):
         PostFinance server
     """
     _name = 'fds.postfinance.account'
+    _description = 'FDS postfinance account'
 
     name = fields.Char(
         required=True

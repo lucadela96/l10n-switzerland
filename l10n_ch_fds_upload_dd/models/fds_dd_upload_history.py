@@ -26,6 +26,7 @@ class FdsDdUploadHistory(models.Model):
     """ History of direct debit uploads to FDS
     """
     _name = 'fds.dd.upload.history'
+    _description = 'FDS dd upload history'
 
     fds_account_id = fields.Many2one(
         comodel_name='fds.postfinance.account',
