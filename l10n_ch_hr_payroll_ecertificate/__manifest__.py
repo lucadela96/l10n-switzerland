@@ -17,7 +17,9 @@
     'license': 'AGPL-3',
     'data': [
         'security/ir.model.access.csv',
-        'report/yearly_payroll_certificate.xml'
+        'views/hr_salary_declaration_view.xml',
+        'report/yearly_payroll_certificate.xml',
+        'wizzards/generate_sd_wiz_view.xml'
     ],
     'installable': True
 }

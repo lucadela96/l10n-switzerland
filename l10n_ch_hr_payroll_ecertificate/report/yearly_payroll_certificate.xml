@@ -26,7 +26,9 @@
             <Staff>
               <Person t-foreach="docs" t-as="doc">
                 <Particulars>
-                  <Language t-esc="doc.employee_id.address_home_id.lang[:2]+'-CH'"/>
+                    <Language>
+                        <t t-esc="doc.employee_id.address_home_id.lang[:2]"/><t t-if="doc.employee_id.address_home_id.lang[:2] != 'en'">-CH</t>
+                    </Language>
                   <DateOfBirth t-esc="doc.employee_id.birthday"/>
                   <Social-InsuranceIdentification>
                     <SV-AS-Number t-esc="doc.employee_id.identification_id"/>

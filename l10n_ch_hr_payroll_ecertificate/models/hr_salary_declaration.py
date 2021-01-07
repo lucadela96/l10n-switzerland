@@ -25,12 +25,18 @@ class HrSalaryDeclaration(models.Model):
 
     @api.model
     def generate_yearly_declaration(self, date_from, date_to):
-        payslip_lines_obj = self.env['hr.payslip.line'].search(
-            [('slip_id.date_from', '>=', date_from), ('slip_id.date_to', '<=', date_to), ('slip_id.state', '=', 'done')])
+        payslip_lines_obj = \
+            self.env['hr.payslip.line'].search(
+                                                [('slip_id.date_from', '>=', date_from),
+                                                 ('slip_id.date_to', '<=', date_to),
+                                                 ('slip_id.state', '=', 'done')]
+            )
         employee_ids = payslip_lines_obj.mapped('employee_id.id')
         grossincome = defaultdict(float)
         social_ded = defaultdict(float)
         bvg_lpp_ded = defaultdict(float)
+        d_from = defaultdict(str)
+        d_to = defaultdict(str)
         for line in payslip_lines_obj:
             if line.code == '5000':
                 grossincome[line.employee_id.id] += line.total
@@ -38,18 +44,21 @@ class HrSalaryDeclaration(models.Model):
                 bvg_lpp_ded[line.employee_id.id] -= line.total
             if line.code == 'TOTAL_DED':
                 social_ded[line.employee_id.id] -= line.total
+            if line.slip_id.date_from.strftime('%Y-%m-%d') < d_from[line.employee_id.id] or not d_from[line.employee_id.id]:
+                d_from[line.employee_id.id] = line.slip_id.date_from.strftime('%Y-%m-%d')
+            if line.slip_id.date_to.strftime('%Y-%m-%d') > d_to[line.employee_id.id] or not d_to[line.employee_id.id]:
+                d_to[line.employee_id.id] = line.slip_id.date_to.strftime('%Y-%m-%d')
         _logger.info("generating '%s' salary declaration", len(employee_ids))
         for emp in employee_ids:
             sd_vals = {
                 'employee_id': emp,
-                'date_from': date_from,
-                'date_to': date_to,
+                'date_from': d_from[emp],
+                'date_to': d_to[emp],
                 'grossincome': math.floor(grossincome[emp]),
                 'social_ded': math.ceil(social_ded[emp]-bvg_lpp_ded[emp]),
                 'bvg_lpp_ded': math.ceil(bvg_lpp_ded[emp]),
-                'year': date_to[:4]
+                'year': date_to.strftime('%Y-%m-%d')[:4]
             }
-            _logger.info("employee '%s' salary declaration: %s income, %s avs/ai...", emp, math.floor(grossincome[emp]), math.ceil(social_ded[emp]-bvg_lpp_ded[emp]))
             self.create(sd_vals)
 
 
