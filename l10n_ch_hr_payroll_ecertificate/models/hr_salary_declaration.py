@@ -1,0 +1,55 @@
+# Copyright 2020 David Wulliamoz
+# License AGPL-3.0 or later (https://www.gnuorg/licenses/agpl).
+from collections import defaultdict
+from odoo import api, models, fields
+import math
+
+import logging
+_logger = logging.getLogger(__name__)
+
+
+class HrSalaryDeclaration(models.Model):
+    _name = 'hr.salary_declaration'
+    _description = 'Salary declaration for generating xml'
+
+    employee_id = fields.Many2one(
+        comodel_name='hr.employee',
+        string='Employee'
+    )
+    date_from = fields.Date()
+    date_to = fields.Date()
+    grossincome = fields.Char()
+    social_ded = fields.Char()
+    bvg_lpp_ded = fields.Char()
+    year = fields.Char()
+
+    @api.model
+    def generate_yearly_declaration(self, date_from, date_to):
+        payslip_lines_obj = self.env['hr.payslip.line'].search(
+            [('slip_id.date_from', '>=', date_from), ('slip_id.date_to', '<=', date_to), ('slip_id.state', '=', 'done')])
+        employee_ids = payslip_lines_obj.mapped('employee_id.id')
+        grossincome = defaultdict(float)
+        social_ded = defaultdict(float)
+        bvg_lpp_ded = defaultdict(float)
+        for line in payslip_lines_obj:
+            if line.code == '5000':
+                grossincome[line.employee_id.id] += line.total
+            if line.name == 'OBP Employee':
+                bvg_lpp_ded[line.employee_id.id] -= line.total
+            if line.code == 'TOTAL_DED':
+                social_ded[line.employee_id.id] -= line.total
+        _logger.info("generating '%s' salary declaration", len(employee_ids))
+        for emp in employee_ids:
+            sd_vals = {
+                'employee_id': emp,
+                'date_from': date_from,
+                'date_to': date_to,
+                'grossincome': math.floor(grossincome[emp]),
+                'social_ded': math.ceil(social_ded[emp]-bvg_lpp_ded[emp]),
+                'bvg_lpp_ded': math.ceil(bvg_lpp_ded[emp]),
+                'year': date_to[:4]
+            }
+            _logger.info("employee '%s' salary declaration: %s income, %s avs/ai...", emp, math.floor(grossincome[emp]), math.ceil(social_ded[emp]-bvg_lpp_ded[emp]))
+            self.create(sd_vals)
+
+
