@@ -18,9 +18,9 @@ class HrSalaryDeclaration(models.Model):
     )
     date_from = fields.Date()
     date_to = fields.Date()
-    grossincome = fields.Char()
-    social_ded = fields.Char()
-    bvg_lpp_ded = fields.Char()
+    grossincome = fields.Integer()
+    social_ded = fields.Integer()
+    bvg_lpp_ded = fields.Integer()
     year = fields.Char()
 
     @api.model

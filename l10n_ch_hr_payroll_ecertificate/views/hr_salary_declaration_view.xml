@@ -6,9 +6,11 @@
         <field name="priority" eval="20"/>
         <field name="arch" type="xml">
             <tree string="Generated Salary declaration">
+                <field name="year"/>
                 <field name="employee_id"/>
                 <field name="date_from"/>
                 <field name="date_to"/>
+                <field name="grossincome" sum="grossincome"/>
             </tree>
         </field>
     </record>
