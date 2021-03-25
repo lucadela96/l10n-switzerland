@@ -7,6 +7,7 @@ from odoo import models, fields, api
 
 class HrPayrollConfig(models.TransientModel):
     _name = 'hr.payroll.config'
+    _description = 'Config payroll'
 
     @api.model
     def _get_default_cc(self):

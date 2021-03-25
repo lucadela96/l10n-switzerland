@@ -17,6 +17,7 @@ class FdsKeyGeneratorWizard(models.TransientModel):
         keys" for one FDS.
     """
     _name = 'fds.key.generator.wizard'
+    _description = 'FDS key generator wizard'
 
     user_id = fields.Many2one(
         comodel_name='res.users',

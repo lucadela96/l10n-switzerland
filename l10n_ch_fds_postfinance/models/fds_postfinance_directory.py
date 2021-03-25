@@ -8,6 +8,7 @@ class FdsPostfinanceDirectory(models.Model):
     """ Keep directory name of each FDS folder in the database
     """
     _name = 'fds.postfinance.directory'
+    _description = 'FDS postfinance directory'
 
     name = fields.Char(
         string='Directory name',

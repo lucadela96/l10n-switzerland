@@ -7,6 +7,7 @@ from odoo import fields, models
 
 class LPPContract(models.Model):
     _name = 'lpp.contract'
+    _description = 'lpp contract'
 
     company_id = fields.Many2one(
         string='Company',

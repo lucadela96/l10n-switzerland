@@ -9,6 +9,7 @@ from odoo.addons.account_payment_return_import_iso20022.wizard.pain_parser \
 
 class Pain002Parser(models.AbstractModel, PainParser):
     _name = 'account.pain002.parser'
+    _description = 'Parse pain002'
 
     def parse_transaction(self, ns, node, transaction):
         """Parse transaction (entry) node."""

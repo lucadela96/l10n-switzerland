@@ -13,6 +13,7 @@ class FdsPostfinanceFile(models.Model):
         (Keep files in the database)
     """
     _name = 'fds.postfinance.file'
+    _description = 'FDS postfinance file'
 
     fds_account_id = fields.Many2one(
         comodel_name='fds.postfinance.account',
