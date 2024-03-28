@@ -29,7 +29,7 @@ class AccountMoveLine(models.Model):
         vals = super()._prepare_payment_line_vals(payment_order)
         # LSV files need ISR reference in the communication field.
         if payment_order.payment_method_id.pain_version == "pain.008.001.02.ch.03":
-            vals["communication"] = self.move_id.ref.replace(" ", "")
+            vals["communication"] = self.move_id.payment_reference.replace(" ", "")
         if payment_order.payment_type == "inbound":
             if payment_order.company_partner_bank_id.bank_id.clearing == "9000":
                 # Force correct values for Postfinance
