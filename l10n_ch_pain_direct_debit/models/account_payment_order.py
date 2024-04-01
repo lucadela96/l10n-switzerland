@@ -226,7 +226,7 @@ class AccountPaymentOrder(models.Model):
                 party_agent_clearing, "MmbId"
             )
             party_agent_clearing_identification.text = (
-                partner_bank.bank_id.clearing.zfill(5)
+                partner_bank.acc_number.replace(" ", "")[4:9]
             )
             ccp_other = etree.SubElement(party_agent_institution, "Othr")
             ccp_other_id = etree.SubElement(ccp_other, "Id")
@@ -395,7 +395,8 @@ class AccountPaymentOrder(models.Model):
                 ori_debtor_agent_institution_clearing, "MmbId"
             )
             ori_debtor_agent_institution_clearing_identification.text = (
-                line.partner_bank_id.bank_id.clearing.zfill(5)
+                line.partner_bank_id.acc_number.replace(" ", "")[4:9]
+
             )
 
             # .../  <Dbtr>
